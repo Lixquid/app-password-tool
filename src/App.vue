@@ -1,17 +1,38 @@
 <template>
-  <div id="nav">
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </div>
-  <router-view />
+    <div class="container mx-auto my-5">
+        <h1 class="my-5">
+            Password Tool
+            <a
+                href="https://lixquid.com"
+                class="btn btn-outline-primary float-end"
+            >
+                lixquid.com
+            </a>
+        </h1>
+        <div class="card">
+            <div class="card-header">
+                <ul class="nav nav-tabs card-header-tabs">
+                    <li class="nav-item">
+                        <router-link
+                            to="/"
+                            class="nav-link"
+                            active-class="active"
+                            >Home</router-link
+                        >
+                    </li>
+                    <li class="nav-item">
+                        <router-link
+                            to="/about"
+                            class="nav-link"
+                            active-class="active"
+                            >About</router-link
+                        >
+                    </li>
+                </ul>
+            </div>
+            <div class="card-body">
+                <router-view />
+            </div>
+        </div>
+    </div>
 </template>
-
-<style lang="stylus">
-#app
-  font-family Avenir, Helvetica, Arial, sans-serif
-  -webkit-font-smoothing antialiased
-  -moz-osx-font-smoothing grayscale
-  text-align center
-  color #2c3e50
-  margin-top 60px
-</style>
