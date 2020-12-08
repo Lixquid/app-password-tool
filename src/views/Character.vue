@@ -102,7 +102,7 @@
 
 <script lang="ts">
 import { generateDefinitionMixin } from "@/lib/componentEvents";
-import { randomChar, randomInt } from "@/lib/random";
+import { randomChar } from "@/lib/random";
 import { computed, defineComponent, ref, watch } from "vue";
 
 export default defineComponent({

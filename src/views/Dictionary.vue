@@ -21,7 +21,7 @@
 
 <script lang="ts">
 import { generateDefinitionMixin } from "@/lib/componentEvents";
-import { defineComponent, defineEmit, ref, watch } from "vue";
+import { defineComponent, ref, watch } from "vue";
 import words from "@/lib/top3000englishwords.json";
 import { randomInt } from "@/lib/random";
 

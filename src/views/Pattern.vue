@@ -11,14 +11,20 @@
                 Any character inside double quotes <code>""</code> are used
                 as-is.
             </li>
+            <li><code>l</code>: Lowercase letter (<code>a-z</code>)</li>
+            <li><code>u</code>: Uppercase letter (<code>A-Z</code>)</li>
+            <li><code>a</code>: Any letter (<code>A-Z, a-z</code>)</li>
+            <li><code>d</code>: Digit (<code>0-9</code>)</li>
             <li>
-                <code>u</code>: Upper-case letter (<code>A, B, C, ...</code>)
+                <code>w</code>: Word character (Any letter or digit,
+                <code>A-Z, a-z, 0-9</code>)
             </li>
             <li>
-                <code>l</code>: Lower-case letter (<code>a, b, c, ...</code>)
+                <code>p</code>: Punctuation (Any symbol,
+                <code>!, ", $, ...</code>)
             </li>
-            <li><code>d</code>: Digit (<code>1, 2, 3, ...</code>)</li>
-            <li><code>s</code>: Symbol (<code>!, ", $, ...</code>)</li>
+            <li><code>x</code>: Hexadecimal (<code>0-9, A-F</code>)</li>
+            <li><code>.</code>: Any printable character</li>
         </ul>
     </div>
     <div class="row">
@@ -78,18 +84,42 @@ export default defineComponent({
                     case '"':
                         quoted = true;
                         continue;
+                    case "l":
+                        output.push(randomChar("abcdefghijklmnopqrstuvwxyz"));
+                        continue;
                     case "u":
                         output.push(randomChar("ABCDEFGHIJKLMNOPQRSTUVWXYZ"));
                         continue;
-                    case "l":
-                        output.push(randomChar("abcdefghijklmnopqrstuvwxyz"));
+                    case "a":
+                        output.push(
+                            randomChar(
+                                "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+                            )
+                        );
                         continue;
                     case "d":
                         output.push(randomChar("0123456789"));
                         continue;
-                    case "s":
+                    case "w":
+                        output.push(
+                            randomChar(
+                                "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
+                            )
+                        );
+                        continue;
+                    case "p":
                         output.push(
                             randomChar("!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~")
+                        );
+                        continue;
+                    case "x":
+                        output.push(randomChar("0123456789ABCDEF"));
+                        continue;
+                    case ".":
+                        output.push(
+                            randomChar(
+                                "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~"
+                            )
                         );
                         continue;
                     default:
