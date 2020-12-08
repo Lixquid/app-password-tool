@@ -87,6 +87,7 @@
                         class="form-control font-monospace"
                         readonly
                         :value="password"
+                        ref="outputElement"
                     />
                     <button
                         class="btn btn-secondary"
@@ -250,6 +251,7 @@ export default defineComponent({
         const generateDefinition = ref<() => string>(() => "");
         const password = ref("");
         const displayOutput = ref(true);
+        const outputElement = ref<HTMLInputElement | null>(null);
 
         const secureCryptoAvailable = computed(
             () => !!window.crypto?.getRandomValues
@@ -261,13 +263,16 @@ export default defineComponent({
         }
 
         function copyToClipboard() {
-            // TODO: Copy to clipboard
+            console.log("coyp", outputElement.value);
+            outputElement.value?.select();
+            document.execCommand("copy");
         }
 
         return {
             generateDefinition,
             password,
             displayOutput,
+            outputElement,
             secureCryptoAvailable,
             analysis,
             generate,
