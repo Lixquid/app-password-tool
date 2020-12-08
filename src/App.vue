@@ -9,7 +9,7 @@
                 lixquid.com
             </a>
         </h1>
-        <div class="alert alert-warning">
+        <div class="alert alert-warning" v-if="!secureCryptoAvailable">
             <div class="row">
                 <div class="col-auto d-flex align-items-center">
                     <span
@@ -55,7 +55,7 @@
                     @generate="generate"
                 />
             </div>
-            <div class="card-body border-top" v-if="displayOutput">
+            <div class="card-body border-top mt-5" v-if="displayOutput">
                 <button
                     type="button"
                     class="btn btn-secondary mb-2"
@@ -67,7 +67,7 @@
                 <div class="input-group">
                     <input
                         type="text"
-                        class="form-control"
+                        class="form-control font-monospace"
                         readonly
                         :value="password"
                     />
@@ -87,13 +87,17 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { computed, defineComponent, ref } from "vue";
 
 export default defineComponent({
     setup() {
         const generateDefinition = ref<() => string>(() => "");
         const password = ref("");
         const displayOutput = ref(true);
+
+        const secureCryptoAvailable = computed(
+            () => !!window.crypto?.getRandomValues
+        );
 
         function generate() {
             password.value = generateDefinition.value();
@@ -107,6 +111,7 @@ export default defineComponent({
             generateDefinition,
             password,
             displayOutput,
+            secureCryptoAvailable,
             generate,
             copyToClipboard
         };
