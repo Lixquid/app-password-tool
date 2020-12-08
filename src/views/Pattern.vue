@@ -52,12 +52,30 @@
             Pattern
         </label>
         <div class="col">
-            <input
-                type="text"
-                class="form-control font-monospace"
-                id="pattern--pattern"
-                v-model="pattern"
-            />
+            <div class="input-group">
+                <input
+                    type="text"
+                    class="form-control font-monospace"
+                    id="pattern--pattern"
+                    v-model="pattern"
+                />
+                <button
+                    class="btn btn-secondary dropdown-toggle"
+                    type="button"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false"
+                ></button>
+                <ul class="dropdown-menu dropdown-menu-end">
+                    <li v-for="(v, k) in presets" :key="k">
+                        <a
+                            class="dropdown-item"
+                            href="#"
+                            @click.prevent="pattern = v[1]"
+                            >{{ v[0] }}</a
+                        >
+                    </li>
+                </ul>
+            </div>
         </div>
     </div>
 </template>
@@ -65,6 +83,18 @@
 import { generateDefinitionMixin } from "@/lib/componentEvents";
 import { randomChar, randomInt } from "@/lib/random";
 import { defineComponent, ref, watch } from "vue";
+
+const presets: [string, string][] = [
+    ["40-bit Hexadecimal Key", "x{10}"],
+    ["128-bit Hexadecimal Key", "x{32}"],
+    ["256-bit Hexadecimal Key", "x{64}"],
+    [
+        "Serial Number",
+        "[A-Z0-9]{5}-[A-Z0-9]{5}-[A-Z0-9]{5}-[A-Z0-9]{5}-[A-Z0-9]{5}"
+    ],
+    ["UUID", "x{8}-x{4}-4x{3}-[89AB]x{3}-x{12}"],
+    ["MAC Address", "xx-xx-xx-xx-xx-xx"]
+];
 
 export default defineComponent({
     emits: generateDefinitionMixin,
@@ -110,6 +140,7 @@ export default defineComponent({
                                 for (let j = min; j < max; j++) {
                                     b.push(String.fromCharCode(j));
                                 }
+                                i += match[0].length - 1;
                                 generationBuffer += b.join("");
                             } else {
                                 generationBuffer += char;
@@ -225,7 +256,7 @@ export default defineComponent({
         });
         watch(pattern, () => emit("generate"), { immediate: true });
 
-        return { pattern };
+        return { pattern, presets };
     }
 });
 </script>
