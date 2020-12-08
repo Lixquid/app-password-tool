@@ -1,6 +1,7 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from "vue-router";
 import Analyze from "../views/Analyze.vue";
 import Character from "../views/Character.vue";
+import Pattern from "../views/Pattern.vue";
 
 const routes: Array<RouteRecordRaw> = [
     {
@@ -12,11 +13,11 @@ const routes: Array<RouteRecordRaw> = [
         name: "Character Generation",
         component: Character
     },
-    // {
-    //     path: "/pattern",
-    //     name: "Pattern Generation",
-    //     component: Pattern
-    // },
+    {
+        path: "/pattern",
+        name: "Pattern Generation",
+        component: Pattern
+    },
     {
         path: "/analyze",
         name: "Password Analyzer",

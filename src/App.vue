@@ -49,6 +49,14 @@
                     </li>
                     <li class="nav-item">
                         <router-link
+                            to="/pattern"
+                            class="nav-link"
+                            active-class="active"
+                            >Pattern Generation</router-link
+                        >
+                    </li>
+                    <li class="nav-item">
+                        <router-link
                             to="/analyze"
                             class="nav-link"
                             active-class="active"

@@ -102,7 +102,7 @@
 
 <script lang="ts">
 import { generateDefinitionMixin } from "@/lib/componentEvents";
-import { randomInt } from "@/lib/random";
+import { randomChar, randomInt } from "@/lib/random";
 import { computed, defineComponent, ref, watch } from "vue";
 
 export default defineComponent({
@@ -150,7 +150,7 @@ export default defineComponent({
             const output: string[] = [];
 
             for (let i = 0; i < length.value; i++) {
-                output.push(alphabet.value[randomInt(alphabet.value.length)]);
+                output.push(randomChar(alphabet.value));
             }
 
             return output.join("");

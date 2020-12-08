@@ -12,3 +12,12 @@ export function randomInt(max: number): number {
         return Math.floor(Math.random() * max);
     }
 }
+
+/**
+ * Generates a random character from a sample string.
+ * @param sample The string to get a random character from.
+ * @returns A random character from `sample`.
+ */
+export function randomChar(sample: string): string {
+    return sample[randomInt(sample.length)];
+}
