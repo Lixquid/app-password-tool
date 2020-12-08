@@ -25,6 +25,26 @@
             </li>
             <li><code>x</code>: Hexadecimal (<code>0-9, A-F</code>)</li>
             <li><code>.</code>: Any printable character</li>
+            <li>
+                <code>{x}</code>: Repeats the previous item the specified number
+                of times.
+            </li>
+            <li>
+                <code>{,x}</code>: Repeats the previous item a random number of
+                times between 0 and the given number.
+            </li>
+            <li>
+                <code>{x,y}</code>: Repeats the previous item a random number of
+                times between the given range.
+            </li>
+            <li>
+                <code>[xyz]</code>: A random character from the given
+                characters. Repeating a character makes it more likely to
+                appear.
+            </li>
+            <li>
+                <code>[a-z]</code>: A random character in the specified range.
+            </li>
         </ul>
     </div>
     <div class="row">
@@ -43,7 +63,7 @@
 </template>
 <script lang="ts">
 import { generateDefinitionMixin } from "@/lib/componentEvents";
-import { randomChar } from "@/lib/random";
+import { randomChar, randomInt } from "@/lib/random";
 import { defineComponent, ref, watch } from "vue";
 
 export default defineComponent({
@@ -57,79 +77,148 @@ export default defineComponent({
 
             let escaped = false;
             let quoted = false;
+            let range = false;
+            let generationBuffer = "";
             for (let i = 0; i < pattern.value.length; i++) {
                 const char = pattern.value[i];
-                if (escaped) {
-                    output.push(char);
-                    escaped = false;
-                    continue;
+
+                if (range) {
+                    if (escaped) {
+                        generationBuffer += char;
+                        escaped = false;
+                        continue;
+                    }
+
+                    switch (char) {
+                        case "\\":
+                            escaped = true;
+                            continue;
+                        case "]":
+                            range = false;
+                            continue;
+                        default: {
+                            const match = pattern.value
+                                .substr(i)
+                                .match(/^([^\]\\])-([^\]\\])/);
+                            if (match) {
+                                let min = match[1].charCodeAt(0);
+                                let max = match[2].charCodeAt(0);
+                                if (max < min) {
+                                    [min, max] = [max, min];
+                                }
+                                const b: string[] = [];
+                                for (let j = min; j < max; j++) {
+                                    b.push(String.fromCharCode(j));
+                                }
+                                generationBuffer += b.join("");
+                            } else {
+                                generationBuffer += char;
+                            }
+
+                            continue;
+                        }
+                    }
                 }
 
-                if (char === "\\") {
-                    escaped = true;
+                if (escaped) {
+                    output.push(randomChar(generationBuffer));
+                    generationBuffer = char;
+                    escaped = false;
                     continue;
                 }
 
                 if (quoted) {
                     if (char === '"') {
                         quoted = false;
-                        continue;
                     } else {
-                        output.push(char);
-                        continue;
+                        output.push(randomChar(generationBuffer));
+                        generationBuffer = char;
                     }
+                    continue;
                 }
 
                 switch (char) {
+                    case "\\":
+                        escaped = true;
+                        continue;
                     case '"':
                         quoted = true;
                         continue;
+                    case "[": {
+                        output.push(randomChar(generationBuffer));
+                        generationBuffer = "";
+                        range = true;
+                        continue;
+                    }
+                    case "{": {
+                        const match = pattern.value
+                            .substr(i)
+                            .match(/^{((\d+)?,)?(\d+)}/);
+                        // 1?: If set, minimum is specified
+                        // 2?: Minimum bound
+                        // 3!: Maximum bound
+                        if (match) {
+                            const max = parseInt(match[3]);
+                            const min = !match[1]
+                                ? max
+                                : !match[2]
+                                ? 0
+                                : parseInt(match[2]);
+                            const count = randomInt(max - min + 1) + min;
+                            for (let j = 0; j < count; j++) {
+                                output.push(randomChar(generationBuffer));
+                            }
+                            i += match[0].length - 1;
+                            generationBuffer = "";
+                        } else {
+                            output.push(randomChar(generationBuffer));
+                            generationBuffer = "{";
+                        }
+                        continue;
+                    }
                     case "l":
-                        output.push(randomChar("abcdefghijklmnopqrstuvwxyz"));
+                        output.push(randomChar(generationBuffer));
+                        generationBuffer = "abcdefghijklmnopqrstuvwxyz";
                         continue;
                     case "u":
-                        output.push(randomChar("ABCDEFGHIJKLMNOPQRSTUVWXYZ"));
+                        output.push(randomChar(generationBuffer));
+                        generationBuffer = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
                         continue;
                     case "a":
-                        output.push(
-                            randomChar(
-                                "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
-                            )
-                        );
+                        output.push(randomChar(generationBuffer));
+                        generationBuffer =
+                            "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
                         continue;
                     case "d":
-                        output.push(randomChar("0123456789"));
+                        output.push(randomChar(generationBuffer));
+                        generationBuffer = "0123456789";
                         continue;
                     case "w":
-                        output.push(
-                            randomChar(
-                                "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
-                            )
-                        );
+                        output.push(randomChar(generationBuffer));
+                        generationBuffer =
+                            "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
                         continue;
                     case "p":
-                        output.push(
-                            randomChar("!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~")
-                        );
+                        output.push(randomChar(generationBuffer));
+                        generationBuffer = "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~";
                         continue;
                     case "x":
-                        output.push(randomChar("0123456789ABCDEF"));
+                        output.push(randomChar(generationBuffer));
+                        generationBuffer = "0123456789ABCDEF";
                         continue;
                     case ".":
-                        output.push(
-                            randomChar(
-                                "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~"
-                            )
-                        );
+                        output.push(randomChar(generationBuffer));
+                        generationBuffer =
+                            "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~";
                         continue;
                     default:
-                        output.push(char);
+                        output.push(randomChar(generationBuffer));
+                        generationBuffer = char;
                         continue;
                 }
             }
-
-            if (escaped) {
-                output.push("\\");
+            if (generationBuffer) {
+                output.push(randomChar(generationBuffer));
             }
 
             return output.join("");
