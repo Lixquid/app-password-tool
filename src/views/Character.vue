@@ -3,7 +3,7 @@
         Generate a password made up of letters, numbers, and symbols.
     </p>
     <div class="row">
-        <label for="character--length" class="col-sm-2 col-form-label">
+        <label for="character--length" class="col-sm-4 col-form-label">
             Length
         </label>
         <div class="col">

@@ -41,6 +41,14 @@
                     </li>
                     <li class="nav-item">
                         <router-link
+                            to="/dictionary"
+                            class="nav-link"
+                            active-class="active"
+                            >Dictionary Generation</router-link
+                        >
+                    </li>
+                    <li class="nav-item">
+                        <router-link
                             to="/analyze"
                             class="nav-link"
                             active-class="active"

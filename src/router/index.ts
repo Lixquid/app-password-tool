@@ -21,12 +21,15 @@ const routes: Array<RouteRecordRaw> = [
         path: "/analyze",
         name: "Password Analyzer",
         component: Analyze
+    },
+    {
+        path: "/dictionary",
+        name: "Dictionary Generation",
+        component: () =>
+            import(
+                /* webpackChunkName: "dictionaryGeneration" */ "../views/Dictionary.vue"
+            )
     }
-    // {
-    //     path: "/dictionary",
-    //     name: "Dictionary Generation",
-    //     component: () => import(/* webpackChunkName: "dictionaryGeneration" */ "../views/Dictionary.vue")
-    // }
 ];
 
 const router = createRouter({
